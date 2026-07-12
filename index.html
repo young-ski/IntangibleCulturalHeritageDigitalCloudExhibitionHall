@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>非遗数字云展馆 | 马街曲艺 & 汝窑宋瓷</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif}
+        body{background:#f6f7f9;color:#333;line-height:1.8}
+        .banner{
+            width:100%;min-height:220px;
+            background:linear-gradient(110deg,#003366,#0066aa,#c92a2a);
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+            color:#fff;position:relative;overflow:hidden;padding:20px 15px;text-align:center
+        }
+        .banner::before{content:"";position:absolute;width:100%;height:100%;background:rgba(255,255,255,0.05)}
+        .banner h1{font-size:clamp(24px,5vw,40px);letter-spacing:2px;font-weight:600;z-index:2}
+        .banner p{font-size:clamp(14px,2vw,16px);margin-top:10px;opacity:.9;z-index:2}
+
+        .nav-box{
+            width:92%;max-width:1100px;margin:-40px auto 60px;
+            display:flex;justify-content:center;gap:30px;flex-wrap:wrap;position:relative;z-index:9
+        }
+        .nav-item{
+            flex:1;min-width:260px;max-width:300px;background:#fff;padding:25px 20px;
+            border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.12);
+            text-align:center;cursor:pointer;transition:all .4s ease
+        }
+        .nav-item:hover{transform:translateY(-8px);box-shadow:0 15px 40px rgba(0,0,0,0.18)}
+        .nav-item.majie{border-top:4px solid #d92b2b}
+        .nav-item.ruyao{border-top:4px solid #007cc7}
+        .nav-item h3{font-size:clamp(18px,3vw,22px);margin-bottom:6px}
+        .nav-item.majie h3{color:#b71c1c}
+        .nav-item.ruyao h3{color:#004e89}
+        .nav-item p{font-size:14px;color:#777}
+
+        .hall{
+            width:92%;max-width:1100px;margin:0 auto 80px;background:#fff;
+            border-radius:20px;box-shadow:0 10px 50px rgba(0,0,0,0.06);
+            padding:clamp(25px,5vw,50px);display:none
+        }
+        .hall-title{text-align:center;margin-bottom:45px;padding-bottom:20px;border-bottom:1px solid #eee}
+        .hall-title h2{font-size:clamp(22px,4vw,30px);margin-bottom:10px}
+        .hall-title p{color:#888;font-size:15px}
+
+        .text-img-wrap{margin:40px 0;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+        .odd .text-box{order:1}
+        .odd .img-box{order:2}
+        .even .img-box{order:1}
+        .even .text-box{order:2}
+
+        .img-box{
+            border-radius:14px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.08);
+            cursor:pointer;transition:.3s;width:100%
+        }
+        .img-box:hover{transform:scale(1.02)}
+        .img-box .pic{width:100%;height:clamp(180px,30vw,260px);background:#f1f1f1}
+        .img-box .pic img{width:100%;height:100%;object-fit:cover;display:block}
+
+        .text-box h4{font-size:clamp(17px,3vw,20px);color:#222;border-left:4px solid #007cc7;padding-left:12px;margin-bottom:20px}
+        .text-box p{font-size:16px;text-indent:2em;color:#444;margin-bottom:15px}
+
+        .total-intro{margin:60px 0;padding:clamp(20px,4vw,35px);background:#f8fafc;border-radius:16px;border:1px solid #eef2f7}
+        .total-intro h3{font-size:clamp(20px,4vw,24px);text-align:center;margin-bottom:25px;color:#1a3b61}
+        .total-intro p{font-size:clamp(15px,2vw,17px);text-indent:2em;color:#333;margin-bottom:18px;line-height:1.9}
+
+        .media-box{background:#f8fafc;padding:clamp(20px,4vw,30px);border-radius:16px;margin-top:40px;border:1px solid #eef2f7}
+        .media-box h4{font-size:clamp(16px,3vw,19px);margin-bottom:15px;color:#004e89}
+        .media-box p{font-size:16px;line-height:1.9;text-indent:2em;margin-bottom:15px}
+        video{width:100%;border-radius:10px}
+
+        .cultural-title{margin:70px 0 40px;text-align:center}
+        .cultural-title h3{font-size:clamp(20px,4vw,26px);color:#222;padding-bottom:15px;border-bottom:1px solid #eee}
+
+        .modal{
+            position:fixed;top:0;left:0;width:100%;height:100%;
+            background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;
+            z-index:999;padding:20px
+        }
+        .modal img{max-width:95%;max-height:90vh;object-fit:contain}
+        .modal-close{position:absolute;top:30px;right:30px;color:#fff;font-size:40px;cursor:pointer;z-index:1000}
+
+        footer{text-align:center;padding:30px;color:#999;font-size:14px}
+
+        @media(max-width:768px){
+            .text-img-wrap{grid-template-columns:1fr;gap:20px}
+            .odd .text-box,.odd .img-box,.even .img-box,.even .text-box{order:initial}
+            .nav-box{margin:-30px auto 50px;gap:20px}
+        }
+    </style>
+</head>
+<body>
+<div class="banner">
+    <h1>非遗数字云展馆 · 永不落幕线上展厅</h1>
+    <p>马街曲艺文化 | 汝窑宋瓷艺术 数字化展示平台</p>
+</div>
+<div class="nav-box">
+    <div class="nav-item majie" onclick="openHall('majieHall')">
+        <h3>🎤 马街曲艺专区</h3>
+        <p>千年民俗书会 · 民间曲艺非遗传承</p>
+    </div>
+    <div class="nav-item ruyao" onclick="openHall('ruyaoHall')">
+        <h3>🏺 汝窑宋瓷专区</h3>
+        <p>宋瓷官窑之首 · 天青传世工艺文化</p>
+    </div>
+</div>
+
+<!-- 马街书会 -->
+<div class="hall" id="majieHall">
+    <div class="hall-title">
+        <h2>马街书会 · 传统曲艺文化展厅</h2>
+        <p>国家级非物质文化遗产 | 中原民间曲艺活化石</p>
+    </div>
+    <!-- 6张主题图 -->
+    <div class="text-img-wrap odd">
+        <div class="text-box">
+            <h4>一、马街书会航拍全景风貌</h4>
+            <p>每年正月十三，宝丰马街的田野间便会形成规模盛大的曲艺集会，广阔农田化作天然舞台，数万民众与艺人汇聚于此，航拍视角能够直观展现这场延续七百年民俗盛会的磅礴气势。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)">
+            <div class="pic"><img src="images/majie11.jpg" alt="马街航拍全景"></div>
+        </div>
+    </div>
+    <div class="text-img-wrap even">
+        <div class="text-box">
+            <h4>二、民间艺人现场说唱表演</h4>
+            <p>各地曲艺艺人就地落座，手持三弦、简板、大鼓开启弹唱，无专业舞台、无灯光布景，纯粹依靠唱腔与故事打动观众，是原生态民间曲艺最真实的呈现形式。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)">
+            <div class="pic"><img src="images/majie12.jpg" alt="艺人说唱现场"></div>
+        </div>
+    </div>
+    <div class="text-img-wrap odd">
+        <div class="text-box">
+            <h4>三、传统曲艺全套演奏道具</h4>
+            <p>三弦、大鼓、木板、简板构成北方曲艺核心伴奏器具，轻便便携，适配艺人走乡赶会的流动演出模式，每一件道具都承载着代代相传的说唱记忆。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)">
+            <div class="pic"><img src="images/majie13.jpg" alt="曲艺道具"></div>
+        </div>
+    </div>
+    <div class="text-img-wrap even">
+        <div class="text-box">
+            <h4>四、乡村民众围坐听书场景</h4>
+            <p>不分男女老少，村民自发围坐艺人周边免费聆听，没有门槛、没有距离，曲艺完全融入百姓日常生活，是独属于中原乡土的文化娱乐方式。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)">
+            <div class="pic"><img src="images/majie14.jpg" alt="群众听书现场"></div>
+        </div>
+    </div>
+    <div class="text-img-wrap odd">
+        <div class="text-box">
+            <h4>五、老一代非遗曲艺传承人</h4>
+            <p>老一辈艺人坚守数十年说唱生涯，依靠口传心授传承曲目与唱腔，是马街书会文化脉络的核心守护者，见证书会从旧时延续至现代的完整变迁。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)">
+            <div class="pic"><img src="images/majie15.jpg" alt="老艺人特写"></div>
+        </div>
+    </div>
+    <div class="text-img-wrap even">
+        <div class="text-box">
+            <h4>六、艺人拜师与行业交流仪式</h4>
+            <p>马街书会不只是表演场地，更是曲艺行业拜师学艺、交流曲目的核心平台，传统拜师礼仪完整保留，维系着民间说唱技艺的传承链条。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)">
+            <div class="pic"><img src="images/majie16.jpg" alt="拜师交流现场"></div>
+        </div>
+    </div>
+    <!-- 整体介绍 -->
+    <div class="total-intro">
+        <h3>马街书会整体综合介绍</h3>
+        <p>马街书会坐落于河南省平顶山市宝丰县马街村，是2006年列入首批国家级非物质文化遗产的大型民俗曲艺活动，起源于元代延祐年间祭祀火神的民间习俗，距今拥有七百余年从未中断的活态传承历史。每年农历正月十三，来自河南、河北、山东、山西、安徽等十余省份的上千名曲艺艺人自发奔赴马街，以田野为舞台，展演河南坠子、河洛大鼓、三弦书、评书、琴书等数十种北方传统曲种。</p>
+        <p>与城市专业剧场曲艺不同，马街书会最大特色在于原生态、平民化，全程无收费门槛，民众自由围观聆听，曲目内容涵盖历史演义、民间传说、忠孝侠义故事，语言通俗质朴，饱含中原乡土人文气息。书会同时兼具行业交流功能，每年举办传统拜师仪式，年轻学徒跟随师父学习唱腔与曲目，完成曲艺技艺的代际传递。</p>
+        <p>在现代影视、短视频娱乐冲击下，传统说唱受众持续缩减，马街书会成为国内规模最大、存续时间最长的民间曲艺活化石，具备极高民俗学、音乐史、口头文学研究价值。本数字云展馆通过图文纪实完整留存书会影像资料，打破时空限制，面向青少年普及非遗文化，为马街曲艺长久数字化保护与传承提供稳定载体。</p>
+    </div>
+    <!-- 视频 -->
+    <div class="media-box">
+        <h4>🎬 马街书会完整文化介绍视频</h4>
+        <p>本片整合航拍全景、艺人专访、民俗祭祀、现场表演全维度实拍素材，由非遗领域专家全程专业解说，完整梳理马街书会七百年发展脉络，直观展现民间曲艺独特艺术魅力与当代非遗保护现状，适用于课堂科普、文旅宣传使用。</p>
+        <video controls muted>
+            <source src="video/majie_intro.mp4" type="video/mp4">
+        </video>
+    </div>
+    <!-- 30张文物图集 -->
+    <div class="cultural-title"><h3>马街曲艺文物实景图集</h3></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>1.曲艺老乐器文物</h4><p>历年收藏的老式三弦、大鼓等百年演奏器具，完整保留旧时曲艺演奏原貌。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen1.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>2.传统说书手抄本</h4><p>老一辈艺人代代相传的手写曲本，记载数百段失传民间说唱故事。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen2.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>3.老式说书简板</h4><p>实木手工打磨简板，敲击节奏辅助唱腔，是北方曲艺标配道具。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen3.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>4.民国时期说书大鼓</h4><p>留存近百年牛皮大鼓，音色浑厚，是早期书会核心伴奏乐器。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen4.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>5.老艺人演出服饰</h4><p>传统说唱艺人表演长衫、头巾，还原旧时书会艺人装扮风貌。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen5.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>6.历史书会老照片</h4><p>七八十年代马街书会黑白纪实照片，记录早年原生态说书场景。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen6.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>7.木质说书支架</h4><p>野外说书放置曲本的简易木架，轻便便携，适配田野演出。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen7.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>8.民间艺人铜制响板</h4><p>黄铜打造打击乐器，配合唱腔烘托情绪，流传百年完好无损。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen8.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>9.非遗传承人收藏曲谱</h4><p>当代老艺人珍藏的手写曲谱，收录濒临失传传统长篇书目。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen9.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>10.传统三弦琴头雕刻细节</h4><p>老三弦手工雕花琴头，兼具实用与民间工艺审美。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen10.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>11.早年书会纸质海报</h4><p>九十年代手写海报，记录当年书会艺人名录与演出曲目。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen11.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>12.说书人随身布袋</h4><p>收纳乐器、曲本、道具的粗布布袋，旧时艺人赶路标配。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen12.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>13.木制敲击醒木</h4><p>说书开场、转折使用的醒木，一木定场，吸引观众注意力。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen13.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>14.八十年代艺人合影</h4><p>往届马街书会全体艺人合影，留存珍贵曲艺行业史料。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen14.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>15.手工牛皮鼓面特写</h4><p>传统大鼓原生牛皮鼓面，岁月留下自然使用痕迹。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen15.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>16.手抄长篇评书底本</h4><p>数十页手写原稿，完整记录完整历史演义说唱内容。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen16.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>17.老艺人竹制打板</h4><p>天然竹片打磨简易打板，轻便耐用，民间普及度极高。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen17.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>18.书会民俗祭祀旧器物</h4><p>马街书会起源火神祭祀，留存旧时祭祀民俗道具。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen18.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>19.老式三弦琴弦与琴码</h4><p>传统丝质琴弦、手工木琴码，还原古代弹拨乐器配置。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen19.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>20.乡村群众听书老底片</h4><p>胶片拍摄早年书会现场，记录百姓听书真实场景。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen20.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>21.艺人收徒拜师信物</h4><p>传统拜师仪式信物，见证曲艺师徒传承礼制。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen21.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>22.民间小调专属曲本</h4><p>河南坠子、三弦书小调手抄曲集，收录乡土情歌小调。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen22.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>23.旧时代艺人遮阳草帽</h4><p>野外说书遮阳粗布草帽，旧时艺人必备生活用品。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen23.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>24.铜制说书小锣</h4><p>开场招揽观众铜锣，清脆声响吸引周边村民听书。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen24.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>25.民国整套曲艺道具组</h4><p>成套民国乐器、简板、醒木、曲本完整展品。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen25.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>26.非遗保护档案资料</h4><p>官方马街书会非遗普查、艺人登记原始档案。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen26.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>27.竹制三弦收纳琴盒</h4><p>手工竹盒，长途赶会收纳保护三弦乐器。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen27.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>28.火神祭祀民俗版画</h4><p>马街书会祭祀起源配套传统木刻版画文物。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen28.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>29.老艺人唱腔注解手稿</h4><p>艺人标注换气、拖腔私人手稿，极具民俗研究价值。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen29.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>30.马街曲艺馆藏全景</h4><p>宝丰非遗展馆马街曲艺专区整体陈列实拍。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/majie_wen30.jpg"></div></div></div>
+</div>
+
+<!-- 汝窑展厅 -->
+<div class="hall" id="ruyaoHall">
+    <div class="hall-title">
+        <h2>汝窑宋瓷 · 宋代官窑艺术展厅</h2>
+        <p>宋代五大名窑之首 | 天青釉传世国宝非遗工艺</p>
+    </div>
+    <div class="text-img-wrap odd">
+        <div class="text-box">
+            <h4>一、汝窑经典天青釉传世器物</h4>
+            <p>汝窑标志性雨过天青色温润内敛，釉层肥厚如玉，摒弃繁杂装饰，依靠纯粹釉色塑造高级美感，是北宋皇室专用御用瓷器，代表宋代审美巅峰。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao1.jpg"></div></div>
+    </div>
+    <div class="text-img-wrap even">
+        <div class="text-box">
+            <h4>二、汝瓷天然开片纹理细节</h4>
+            <p>烧制冷却时胎釉收缩差异自然形成蝉翼纹、蟹爪纹开片，每件器物纹路独一无二，无法人工复刻，是汝窑区别于其他窑口的核心识别特征。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao2.jpg"></div></div>
+    </div>
+    <div class="text-img-wrap odd">
+        <div class="text-box">
+            <h4>三、古法松木柴窑烧制工艺</h4>
+            <p>传统汝瓷依靠松木柴火烧制，窑温、气氛、冷却速度都会直接影响釉色成色，工序繁复容错率极低，自古流传“十窑九不成”的行业说法。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao4.jpg"></div></div>
+    </div>
+    <div class="text-img-wrap even">
+        <div class="text-box">
+            <h4>四、汝窑简约古典器型展示</h4>
+            <p>汝瓷器型线条流畅端庄，无雕刻彩绘堆砌，仅依靠简洁轮廓营造素雅庄重气质，完美诠释宋代美学“大道至简”的核心追求。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao5.jpg"></div></div>
+    </div>
+    <div class="text-img-wrap odd">
+        <div class="text-box">
+            <h4>五、汝州清凉寺官窑考古遗址</h4>
+            <p>河南汝州清凉寺为北宋汝官窑原生窑址，考古发掘出土大量瓷片、窑具，完整还原宋代皇家瓷厂生产布局，是研究汝窑历史的核心实物依据。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao6.jpg"></div></div>
+    </div>
+    <div class="text-img-wrap even">
+        <div class="text-box">
+            <h4>六、当代汝瓷非遗匠人创作</h4>
+            <p>现代非遗匠人复原失传千年的天青釉配方，复刻全套手工制瓷工序，在传承宋代制式基础上创新现代器型，推动汝窑文化走进大众生活。</p>
+        </div>
+        <div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao7.jpg"></div></div>
+    </div>
+    <!-- 汝窑整体介绍 -->
+    <div class="total-intro">
+        <h3>汝窑宋瓷整体综合介绍</h3>
+        <p>汝窑因窑址坐落于北宋汝州得名，是宋代专为宫廷烧制御用瓷器的官窑，位列汝、官、哥、钧、定五大名窑之首，创烧于北宋初年，宋徽宗时期工艺达到艺术顶峰，所有成品专供皇室使用，民间严禁私自烧制、收藏汝瓷。靖康之变北宋覆灭后，窑场遭到损毁，完整烧制技艺彻底失传，官窑仅持续二十余年烧制周期，如今全球公认完整传世汝器不足百件，稀缺程度造就“家财万贯，不及汝瓷一片”的历史评价。</p>
+        <p>汝窑核心艺术特征为独有的天青釉色，釉面温润肥厚，光线变化下呈现层次柔和的淡青渐变，搭配烧制自然形成的开片纹路，不依靠彩绘、浮雕装饰，以极简素雅的质感契合宋代文人淡泊、内敛、崇尚自然的审美哲学。整套制瓷流程全手工完成，从选土揉泥、拉坯修胎、多层施釉到松木柴窑烧制，十余道工序环环相扣，微小温度偏差便会造成器物报废，烧制难度冠绝古代陶瓷品类。</p>
+        <p>如今汝瓷烧制技艺列入国家级非物质文化遗产，汝州本地匠人持续复原古法工艺，同时结合现代审美开发茶具、文房、装饰摆件等新品类；考古、文物修复工作同步推进，窑址展馆、数字化云展共同搭建完整文化传播体系，让失传千年的宋瓷美学重新被大众认知、传承。</p>
+    </div>
+    <!-- 汝窑视频 -->
+    <div class="media-box">
+        <h4>🎬 汝窑宋瓷完整文化讲解视频</h4>
+        <p>视频收录馆藏国宝实拍、窑址考古画面、古法柴烧完整流程、古陶瓷专家深度解读，全方位解析汝窑历史脉络、天青釉工艺、开片美学、传世价值与当代非遗传承，清晰解读汝窑稳居宋瓷第一的核心原因，适合校园科普、文旅展示使用。</p>
+        <video controls muted>
+            <source src="video/ruyao_intro.mp4" type="video/mp4">
+        </video>
+    </div>
+    <!-- 汝窑30张文物图集 -->
+    <div class="cultural-title"><h3>汝窑宋瓷文物实景图集</h3></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>1.传世汝窑天青釉洗</h4><p>馆藏一级文物，标准雨过天青釉，自然蝉翼开片，宋代皇家文房。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen1.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>2.汝窑窑址出土瓷片标本</h4><p>清凉寺官窑残片，直观展示胎土、釉层、烧制工艺细节。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen2.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>3.宋代汝窑纸槌瓶文物</h4><p>宫廷陈设器，器型修长简约，釉色均匀温润，存世稀少。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen3.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>4.古法制瓷取土原料</h4><p>汝州本地高岭土，宋代官窑专用胎土，汝瓷温润质感基础。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen4.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>5.汝窑三足洗完整文物</h4><p>宋代经典文房水洗，三足支撑，通体天青，遍布蟹爪纹开片。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen5.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>6.古代柴窑匣钵窑具</h4><p>烧制汝瓷专用匣钵，隔绝烟尘，保证釉面纯净无瑕。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen6.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>7.汝窑盏托馆藏文物</h4><p>配套茶盏宋代御用茶具，造型规整，体现宋代饮茶美学。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen7.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>8.汝瓷釉料矿石原料</h4><p>调配天青釉天然矿物，古代匠人手工研磨配釉。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen8.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>9.传世汝窑莲花碗</h4><p>仿生莲花造型，线条柔和，天青莹润，宋代皇室日用瓷代表。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen9.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>10.汝窑支钉残件</h4><p>底部芝麻支钉痕迹，区分汝窑与其他窑口核心特征。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen10.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>11.汝窑长颈瓶馆藏实拍</h4><p>宫廷观赏瓷，极简线条，无多余装饰，宋式素雅审美。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen11.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>12.传统手工拉坯工具</h4><p>复原宋代转盘、刮板，还原古法拉坯成型工序。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen12.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>13.汝窑天青釉小盘文物</h4><p>小型御用果盘，釉色通透，光线下多层淡青渐变。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen13.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>14.清凉寺考古探方全景</h4><p>发掘现场完整保留宋代作坊、窑炉、原料堆放遗迹。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen14.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>15.汝窑水仙盆国宝</h4><p>顶级馆藏汝瓷，通体无纹，完美诠释雨过天青云破处。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen15.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>16.手工修胎刀具套装</h4><p>宋代匠人修胎刀具，打磨器型，保证线条匀称流畅。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen16.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>17.汝窑弦纹樽馆藏文物</h4><p>仿古青铜礼器，极简弦纹，宋代皇家祭祀陈设瓷。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen17.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>18.古法浸釉工艺实拍</h4><p>素胎浸入釉浆均匀覆釉，汝瓷温润釉层关键步骤。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen18.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>19.汝窑残片修复成品</h4><p>考古破损瓷片修复复原，用于展览与学术研究。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen19.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>20.柴窑松木燃料实拍</h4><p>古法烧制专用松木，火焰氛围决定天青成色。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen20.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>21.汝窑茶盏成套文物</h4><p>完整一套宋代茶盏、盏托，还原宋代饮茶雅集场景。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen21.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>22.官窑遗址出土窑炉残壁</h4><p>宋代原始窑炉墙体遗迹，见证千年烧瓷历史。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen22.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>23.汝瓷自然冰裂纹特写</h4><p>冷热收缩形成天然开片，每一件纹路独一无二。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen23.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>24.非遗匠人手工揉泥工序</h4><p>反复捶打揉捏胎土，去除气泡，保证成品不开裂。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen24.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>25.小型汝窑文房水滴</h4><p>宋代文人书房加水器具，小巧雅致，釉色纯净。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen25.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>26.历代汝瓷收藏古籍记载</h4><p>明清古籍对汝窑瓷器的文字记录与图谱。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen26.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>27.汝窑双耳瓶陈设瓷</h4><p>简约双耳造型，不加繁复装饰，宋代极简美学代表。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen27.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>28.现代复原柴窑全景</h4><p>非遗基地复原宋代柴窑，完整复刻古法烧制流程。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen28.jpg"></div></div></div>
+    <div class="text-img-wrap odd"><div class="text-box"><h4>29.汝瓷胎土断面细节</h4><p>香灰胎标志性断面，是鉴定古汝窑核心依据。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen29.jpg"></div></div></div>
+    <div class="text-img-wrap even"><div class="text-box"><h4>30.汝窑文化展馆整体陈列</h4><p>汝州非遗展馆全部汝窑文物综合展示实拍。</p></div><div class="img-box" onclick="openImg(this)"><div class="pic"><img src="images/ruyao_wen30.jpg"></div></div></div>
+</div>
+
+<!-- 图片弹窗 -->
+<div class="modal" id="imgModal">
+    <span class="modal-close" onclick="closeImg()">×</span>
+    <img id="showImg">
+</div>
+<footer>非遗数字云展馆｜轻量化H5静态网页｜Web前端实训加分作品</footer>
+<script>
+// 切换展厅
+function openHall(id){
+    document.querySelectorAll(".hall").forEach(item=>item.style.display="none");
+    document.getElementById(id).style.display="block";
+    window.scrollTo({top:80,behavior:"smooth"})
+}
+// 图片弹窗修复
+function openImg(dom){
+    let modal = document.getElementById("imgModal");
+    let showImg = document.getElementById("showImg");
+    let targetImg = dom.querySelector(".pic img");
+    if(targetImg){
+        showImg.src = targetImg.src;
+    }
+    modal.style.display = "flex";
+}
+function closeImg(){
+    document.getElementById("imgModal").style.display = "none";
+}
+// 默认打开汝窑展厅
+window.onload = function(){
+    openHall("ruyaoHall");
+}
+</script>
+</body>
+</html>
